@@ -103,8 +103,16 @@ class Client(object):
                     self.channel.send(f"kill -9 `ps -ef | grep '{self.host} {self.port}' | grep -v grep | awk '{{print $2}}'`\r".encode())
                     self.expectphrase(getpass.getuser(), timeout=self.timeout)
                     time.sleep(.1)
-                    self.channel.send(f'telnet {self.host} {self.port}\r'.encode())
-                    self.expectphrase('Escape character', timeout=self.timeout)
+                    if self.user:
+                        self.channel.send(f'telnet {self.host}\r'.encode())
+                        self.expectphrase(r'[Ll]ogin:', timeout=self.timeout)
+                        self.channel.send(f'{self.user}\r'.encode())
+                        self.expectphrase(r'[Pp]assword:', timeout=self.timeout)
+                        self.channel.send(f'{self.password}\r'.encode())
+                        self.expectphrase(self.local_prompt, timeout=self.timeout)
+                    else:
+                        self.channel.send(f'telnet {self.host} {self.port}\r'.encode())
+                        self.expectphrase('Escape character', timeout=self.timeout)
                 else:
                     self.channel.send(f"kill -9 `ps -ef | grep '{self.port}' | grep -v grep | awk '{{print $2}}'`\r".encode())
                     self.expectphrase(getpass.getuser(), timeout=self.timeout)
@@ -113,7 +121,7 @@ class Client(object):
         self.display = True
 
     def send(self, command, expectphrase='', timeout=30, wait_before_send=None, check_received_string=None,
-             check_not_received_string=None, retry=1):
+             check_not_received_string=None, strip_ansi=True, retry=1):
         if wait_before_send:
             log.info(f'Wait Before Send: {wait_before_send} second')
             time.sleep(wait_before_send)
@@ -132,7 +140,7 @@ class Client(object):
                 self.channel.send(command)
             else:
                 time.sleep(3)
-            self.expectphrase(expectphrase, timeout=timeout) if expectphrase else None
+            self.expectphrase(expectphrase, timeout=timeout, strip_ansi=strip_ansi) if expectphrase else None
             if check_received_string:
                 status.append(self.check_received_string(check_received_string))
             if check_not_received_string:
