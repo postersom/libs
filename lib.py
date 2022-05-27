@@ -1,15 +1,11 @@
 import re
-import time
-import traceback
 from engine import conn
 from engine import logger as log
-from engine import protocols
 from engine import sequence
 from engine import sync_groups
 from engine import initialize
 from engine import questions
 from engine import utils
-from engine.constants import PASS, FAIL
 from psu import power_control
 
 
@@ -190,3 +186,7 @@ def fatal_error(msg=None):
 
 def iss_service(func):
     return utils.iss_service(func)
+
+
+def get_variable(key):
+    return utils.get_variable(key)
