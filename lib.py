@@ -7,12 +7,14 @@ from engine import initialize
 from engine import questions
 from engine import utils
 from psu import power_control
+from hipot import hipot
 
 
 RDB = utils.RDB
 apdicts = utils.APDicts()
 get_variables = utils.get_variables()
 PowerControlHandler = power_control.PowerControlHandler
+HipotHandler = hipot.HipotHandler
 
 
 def ask_questions(question, picture_path, html, timeout=60):

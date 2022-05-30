@@ -42,7 +42,7 @@ def get_master_container():
 
 
 class Client(object):
-    def __init__(self, protocol, host, shared_conn=False, user=None, password=None, timeout=30, port=None,
+    def __init__(self, protocol, host=None, shared_conn=False, user=None, password=None, timeout=30, port=None,
                  baudrate=9600, bytesize=8, stopbits=1, local_prompt=None, encoding='ISO-8859-1',
                  display=False, *args, **kwargs):
         self.protocol = protocol.lower()
@@ -121,12 +121,13 @@ class Client(object):
         self.display = True
 
     def send(self, command, expectphrase='', timeout=30, wait_before_send=None, check_received_string=None,
-             check_not_received_string=None, strip_ansi=True, retry=1):
+             check_not_received_string=None, strip_ansi=False, retry=1):
         if wait_before_send:
             log.info(f'Wait Before Send: {wait_before_send} second')
             time.sleep(wait_before_send)
         timeout = timeout if timeout else self.timeout
         cmd = command.replace('\n', '\\n').replace('\r', '')
+        expectphrase = expectphrase.replace('\n', '\\n').replace('\r', '')
         for i in range(1, retry+1):
             status = []
             status.append(True) if not (check_received_string and check_not_received_string) else None
