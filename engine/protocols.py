@@ -121,18 +121,21 @@ class Client(object):
         self.display = True
 
     def send(self, command, expectphrase='', timeout=30, wait_before_send=None, check_received_string=None,
-             check_not_received_string=None, strip_ansi=False, retry=1):
+             check_not_received_string=None, strip_ansi=True, retry=1):
         if wait_before_send:
             log.info(f'Wait Before Send: {wait_before_send} second')
             time.sleep(wait_before_send)
         timeout = timeout if timeout else self.timeout
-        cmd = command.replace('\n', '\\n').replace('\r', '')
-        expectphrase = expectphrase.replace('\n', '\\n').replace('\r', '')
+        _cmd = command.replace('\n', '\\n').replace('\r', '')
+        if isinstance(expectphrase, list):
+            _expect = [i.replace('\n', '\\n').replace('\r', '') for i in expectphrase]
+        else:
+            _expect = expectphrase.replace('\n', '\\n').replace('\r', '')
         for i in range(1, retry+1):
             status = []
             status.append(True) if not (check_received_string and check_not_received_string) else None
-            log.info(f"Send: '{cmd}' | Expect Phrase: '{expectphrase}' | Timeout: {timeout}")
-            self.sync_id = hashlib.md5(f'{cmd}|{expectphrase}|{i}'.encode()).hexdigest()
+            log.info(f"Send: '{_cmd}' | Expect Phrase: '{_expect}' | Timeout: {timeout}")
+            self.sync_id = hashlib.md5(f'{command}|{i}'.encode()).hexdigest()
             log.info(f'Shared Connection ID: {self.sync_id}') if self.shared_conn else None
             if not self.shared_conn or self.shared_conn and get_master_container():
                 utils.delete_cached_data(self.sync_id) if self.shared_conn else None
@@ -148,7 +151,7 @@ class Client(object):
                 status.append(self.check_not_received_string(check_not_received_string))
             if all(status):
                 return True
-            log.warning(f"Try sending the command '{cmd}' for the {i}th time.") if i != retry else None
+            log.warning(f"Try sending the command '{_cmd}' for the {i}th time.") if i != retry else None
         utils.fail()
 
     def expectphrase(self, expect='', timeout=None, strip_ansi=True):
