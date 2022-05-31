@@ -1,0 +1,6 @@
+*.pyc
+*.log
+.idea/*
+ODC_Script/.idea/*
+Logs/*
+.vscode/*
