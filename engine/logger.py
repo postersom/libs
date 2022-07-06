@@ -20,9 +20,9 @@ def timestamp_log(msg):
     for i in [test_name, 'sequences_logs']:
         with open(f'{raw_path}/{i}.txt', 'a+', encoding="utf-8") as f:
             if i == 'sequences_logs':
-                f.write(f'[{datetime.utcnow().isoformat()[:-3]}]|{test_mode}|{test_name}|: {msg}\r')
+                f.write(f'[{datetime.now().isoformat()[:-3]}]|{test_mode}|{test_name}|: {msg}\r')
             else:
-                f.write(f'[{datetime.utcnow().isoformat()[:-3]}]: {msg}\r')
+                f.write(f'[{datetime.now().isoformat()[:-3]}]: {msg}\r')
 
 
 def info(msg):

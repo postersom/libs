@@ -1,3 +1,4 @@
+import time
 from datetime import datetime
 from datetime import timedelta
 from timeit import default_timer as timer
@@ -26,7 +27,7 @@ def test_case():
     log.message(f'SLOT TEST:      {utils.get_variable("${slot_location}")}')
     log.message(f'SCRIPT VERSION: {utils.get_variable("${script_version}")}')
     log.message(f'STEP TEST NAME: {utils.get_variable("${TEST NAME}")}')
-    log.message(f'START TIME:     {datetime.utcnow().isoformat()[:-3]}')
+    log.message(f'START TIME:     {datetime.now().isoformat()[:-3]} ({time.strftime("%Z")})')
     log.message('-'*100)
     if str(utils.get_variable("${PREV TEST STATUS}")) == 'FAIL':
         utils.fail('Skipping Testcase because the status of the previous test case is FAILED.')
