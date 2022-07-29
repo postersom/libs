@@ -15,6 +15,7 @@ apdicts = utils.APDicts()
 get_variables = utils.get_variables()
 PowerControlHandler = power_control.PowerControlHandler
 HipotHandler = hipot.HipotHandler
+TimeIt = utils.TimeIt
 
 
 def ask_questions(question, picture_path, html, timeout=60):
@@ -25,7 +26,7 @@ def ask_questions(question, picture_path, html, timeout=60):
     :param timeout:
     :return:
     """
-    with utils.TimeIt() as t:
+    with TimeIt() as t:
         answer = questions.ask_questions(question=question,
                                          picture_path=picture_path,
                                          html=html,
